@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Gerador de espelho de nota fiscal - Garantia e Devolução Auto Norte" />
+  <title>Espelho Fiscal</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="Espelho Fiscal - início">
+        <span class="brand-mark" aria-hidden="true">EF</span>
+        <span>
+          <strong>espelho fiscal</strong>
+          <small>garantia &amp; devolução · Auto Norte</small>
+        </span>
+      </a>
+      <div class="environment-badge"><span class="status-dot"></span> protótipo funcional</div>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio" data-hero>
+        <div class="hero-copy">
+          <p class="eyebrow">GERADOR DE DOCUMENTOS FISCAIS <span></span></p>
+          <h1>Seu espelho de NF,<br /><em>sem retrabalho.</em></h1>
+          <p class="hero-text">Informe o CNPJ do cliente e a chave de acesso da nota de compra. O sistema confere o emitente, aplica a regra oficial de CFOP do procedimento de Garantia e Devolução e monta o espelho pronto para impressão.</p>
+          <div class="trust-line"><span class="shield-icon" aria-hidden="true">✓</span> CFOP determinado conforme o PROCEDIMENTO GARANTIA E DEVOLUÇÃO oficial</div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="receipt receipt-back"></div>
+          <div class="receipt receipt-main">
+            <div class="receipt-top"><span class="receipt-logo">EF</span><span class="receipt-label">ESPELHO NF</span></div>
+            <div class="receipt-line wide"></div><div class="receipt-line"></div>
+            <div class="receipt-grid"><span></span><span></span><span></span><span></span></div>
+            <div class="receipt-total"><span>TOTAL</span><b>conforme NF</b></div>
+          </div>
+          <div class="hero-stamp">NF-e<br /><strong>OK</strong></div>
+        </div>
+      </section>
+
+      <section class="workspace" aria-labelledby="form-title">
+        <div class="stepper" aria-label="Etapas do processo">
+          <div class="step active" data-step="1"><span>01</span><b>Dados de entrada</b></div>
+          <div class="step-line"></div>
+          <div class="step" data-step="2"><span>02</span><b>Dados da NF</b></div>
+          <div class="step-line"></div>
+          <div class="step" data-step="3"><span>03</span><b>Espelho</b></div>
+        </div>
+
+        <!-- ETAPA 1 -->
+        <div class="panel-grid" id="step-1-panel">
+          <form class="form-panel" id="invoice-form" novalidate>
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">ETAPA 01</p>
+                <h2 id="form-title">Informe os dados da operação</h2>
+              </div>
+              <span class="required-note">* campos obrigatórios</span>
+            </div>
+
+            <label class="field" for="cnpj">
+              <span>CNPJ do cliente <i>*</i></span>
+              <div class="input-wrap"><span class="input-prefix">BR</span><input id="cnpj" name="cnpj" inputmode="numeric" autocomplete="off" placeholder="00.000.000/0000-00" maxlength="18" /><span class="field-state" id="cnpj-state"></span></div>
+              <small class="field-help">Será conferido com o comprador da NF e usado como remetente do espelho.</small>
+            </label>
+
+            <label class="field" for="access-key">
+              <span>Chave de acesso da NF de compra <i>*</i></span>
+              <div class="input-wrap"><span class="input-prefix key-prefix">#</span><input id="access-key" name="access-key" inputmode="numeric" autocomplete="off" placeholder="0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00" maxlength="54" /><span class="field-state" id="key-state"></span></div>
+              <small class="field-help">44 dígitos, disponíveis no DANFE ou no XML baixado do SIEG Hub.</small>
+            </label>
+
+            <div class="security-note"><span class="lock-icon" aria-hidden="true">⌑</span><p><strong>Consulta protegida</strong><br />Apenas notas emitidas pelos CNPJs autorizados serão processadas. O emitente é conferido a partir da própria chave de acesso.</p><span class="authorized-count">02</span></div>
+            <button class="primary-button" type="submit" id="submit-button"><span>Validar dados</span><span class="button-arrow" aria-hidden="true">→</span></button>
+            <p class="form-status" id="form-status" role="status"></p>
+          </form>
+
+          <aside class="side-panel">
+            <div class="side-heading"><span class="mini-icon">i</span><h3>Como funciona</h3></div>
+            <ol class="process-list">
+              <li><span>1</span><div><strong>Validação</strong><p>Conferimos o CNPJ e o dígito verificador da chave de acesso.</p></div></li>
+              <li><span>2</span><div><strong>Emitente</strong><p>O CNPJ do emitente é decodificado direto da chave e comparado à lista autorizada.</p></div></li>
+              <li><span>3</span><div><strong>Dados fiscais</strong><p>Importe o XML da NF para carregar os dados e produtos reais.</p></div></li>
+              <li><span>4</span><div><strong>Espelho</strong><p>Aplicamos a regra oficial de CFOP e montamos o documento para impressão/PDF.</p></div></li>
+            </ol>
+            <div class="authorized-box"><p class="section-kicker">EMITENTES AUTORIZADOS</p><strong>11.509.676/0001-21</strong><strong>11.509.676/0005-55</strong></div>
+          </aside>
+        </div>
+
+        <!-- ETAPA 2 -->
+        <div class="hidden" id="step-2-panel">
+          <div class="form-panel panel-single">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">ETAPA 02</p>
+                <h2>Defina os itens da devolução</h2>
+              </div>
+              <button class="link-button" type="button" id="back-to-step1">← voltar</button>
+            </div>
+
+              <div class="confirm-box" id="issuer-confirm-box"></div>
+
+            <div id="step2-details">
+              <label class="field" for="xml-file">
+                <span>Importar XML da Nota Fiscal <i>*</i></span>
+                <div class="dropzone" id="dropzone">
+                  <input id="xml-file" name="xml-file" type="file" accept=".xml,text/xml,application/xml" />
+                  <p><strong>Selecione o arquivo XML</strong> ou arraste-o para esta área</p>
+                  <small>O XML deve corresponder à chave informada e conter os produtos da NF.</small>
+                </div>
+                <p class="xml-filename" id="xml-filename"></p>
+              </label>
+
+              <label class="field select-field" for="operation-type">
+                <span>Operação <i>*</i></span>
+                <select id="operation-type"><option value="garantia">Garantia</option><option value="devolucao">Devolução</option></select>
+              </label>
+
+              <fieldset class="field finalidade-field">
+                <legend>Categoria do produto <i>*</i></legend>
+                <small class="field-help">Só altere se o cliente declarar uso/consumo ou óleo e derivados — o restante é automático.</small>
+                <label class="radio-option"><input type="radio" name="finalidade" value="regular" checked /> Compra regular (regra padrão)</label>
+                <label class="radio-option"><input type="radio" name="finalidade" value="consumo" /> Uso e consumo</label>
+                <label class="radio-option"><input type="radio" name="finalidade" value="oleo" /> Óleos e derivados de petróleo</label>
+              </fieldset>
+
+              <fieldset class="return-fieldset">
+                <legend>Itens para devolução <i>*</i></legend>
+                <div class="return-type-row">
+                  <label class="radio-option"><input type="radio" name="return-type" value="total" checked /> Devolução total</label>
+                  <label class="radio-option"><input type="radio" name="return-type" value="partial" /> Devolução parcial (ajuste a quantidade)</label>
+                </div>
+                <div class="product-selection" id="product-selection">
+                  <p class="empty-products">Importe o XML para visualizar e selecionar os produtos.</p>
+                </div>
+              </fieldset>
+
+              <button class="primary-button" type="button" id="process-xml-button"><span>Gerar espelho</span><span class="button-arrow" aria-hidden="true">→</span></button>
+            </div>
+            <p class="form-status" id="xml-status" role="status"></p>
+          </div>
+        </div>
+
+        <!-- ETAPA 3 -->
+        <section class="result-section panel-single hidden" id="result-section" aria-live="polite">
+          <div class="result-header">
+            <div>
+              <p class="section-kicker">ETAPA 03 · CONFERÊNCIA CONCLUÍDA</p>
+              <h2>Espelho de Nota Fiscal</h2>
+            </div>
+            <div class="result-header-actions">
+              <button class="link-button" type="button" id="back-to-step2">← ajustar itens</button>
+              <span class="success-pill"><span>✓</span> pronta para revisão</span>
+            </div>
+          </div>
+
+          <div class="printable" id="printable-area">
+            <div class="danfe-heading">
+              <div class="danfe-brand"><strong>AUTO NORTE</strong><small>GRUPO AUTO NORTE<br />GARANTIA &amp; DEVOLUÇÃO</small></div>
+              <div class="danfe-title"><strong>ESPELHO DE NOTA FISCAL</strong><span>DOCUMENTO DE REFERÊNCIA PARA GARANTIA / DEVOLUÇÃO</span></div>
+              <div class="danfe-number"><span>NF-e de origem</span><strong id="out-numero-serie"></strong><small>Não substitui a NF-e original</small></div>
+            </div>
+            <div class="danfe-bar"><span>CHAVE DE ACESSO DA NOTA FISCAL DE ORIGEM</span><strong id="out-chave" class="mono"></strong></div>
+
+            <div class="danfe-box-grid two">
+              <div class="danfe-box"><label>REMETENTE / COMPRADOR DA NOTA</label><strong id="out-emit-nome"></strong><span>CNPJ: <b id="out-emit-cnpj"></b></span></div>
+              <div class="danfe-box"><label>DESTINATÁRIO / EMITENTE AUTORIZADO</label><strong id="out-dest-nome"></strong><span>CNPJ: <b id="out-dest-cnpj"></b></span></div>
+            </div>
+            <div class="danfe-box-grid three">
+              <div class="danfe-box"><label>DATA DE EMISSÃO</label><strong id="out-emissao"></strong></div>
+              <div class="danfe-box"><label>OPERAÇÃO</label><strong id="out-operacao"></strong></div>
+              <div class="danfe-box"><label>REGRA / CFOP</label><strong id="out-cfop-regra"></strong></div>
+            </div>
+
+            <div class="danfe-section-title">CÁLCULO DO IMPOSTO</div>
+            <div class="tax-summary-grid">
+              <div><label>BASE DE CÁLCULO DO ICMS</label><strong id="out-icms-base-top"></strong></div>
+              <div><label>VALOR DO ICMS</label><strong id="out-icms-value-top"></strong></div>
+              <div><label>VALOR DOS PRODUTOS</label><strong id="out-total-top"></strong></div>
+              <div><label>VALOR TOTAL DA NOTA</label><strong id="out-total-nota-top"></strong></div>
+            </div>
+            <div class="danfe-section-title">TRANSPORTADOR / VOLUMES TRANSPORTADOS</div>
+            <div class="transport-grid">
+              <div><label>RAZÃO SOCIAL</label><strong>REMETENTE / CLIENTE</strong></div>
+              <div><label>FRETE POR CONTA</label><strong>0 - REMETENTE</strong></div>
+              <div><label>QUANTIDADE</label><strong id="out-volumes">—</strong></div>
+              <div><label>ESPÉCIE</label><strong>VOLUMES</strong></div>
+              <div><label>MARCA</label><strong>—</strong></div>
+              <div><label>NUMERAÇÃO</label><strong>—</strong></div>
+              <div><label>PESO BRUTO</label><strong>—</strong></div>
+              <div><label>PESO LÍQUIDO</label><strong>—</strong></div>
+            </div>
+            <div class="danfe-section-title">DADOS DO PRODUTO / SERVIÇO</div>
+            <table class="items-table" id="items-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Descrição</th>
+                  <th>NCM/SH</th>
+                  <th>CST</th>
+                  <th>CFOP</th>
+                  <th>UN</th>
+                  <th>Quantidade</th>
+                  <th>Valor unitário</th>
+                  <th>Valor total</th>
+                  <th>Desconto</th>
+                  <th>BC ICMS</th>
+                  <th>Valor ICMS</th>
+                  <th>Alíquota ICMS</th>
+                </tr>
+              </thead>
+              <tbody id="items-tbody"></tbody>
+            </table>
+
+            <div class="danfe-totals"><div><label>INFORMAÇÕES COMPLEMENTARES</label><span>Espelho gerado com base nos produtos selecionados da NF de origem.</span><span>CFOP conforme Procedimento de Garantia e Devolução.</span></div><div class="tax-totals"><div><span>VLR. PRODUTOS</span><strong id="out-total"></strong></div><div><span>VLR. TOTAL NOTA</span><strong id="out-total-nota"></strong></div><div><span>BC ICMS</span><strong id="out-icms-base"></strong></div><div><span>VLR. ICMS</span><strong id="out-icms-value"></strong></div></div></div>
+            <div class="danfe-footer-note">Documento interno para conferência. A emissão da nota fiscal deverá observar a autorização do departamento responsável.</div>
+          </div>
+
+          <p class="procedure-warning hidden" id="procedure-warning"></p>
+
+          <div class="result-actions no-print">
+            <button class="secondary-button" id="reset-button" type="button">Nova consulta</button>
+            <button class="primary-button" id="pdf-button" type="button"><span>Gerar PDF do espelho</span><span class="button-arrow">↓</span></button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer><span>Espelho Fiscal <b>•</b> fluxo de garantia e devolução</span><span>Dados tratados conforme a nota de origem</span></footer>
+  </div>
+  <div class="toast" id="toast" role="alert"></div>
+  <script src="app.js"></script>
+</body>
+</html>
